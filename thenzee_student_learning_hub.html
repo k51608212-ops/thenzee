@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thenzee - Next-Gen Student Learning Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        thenzee: {
+                            50: '#f0f3ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            accent: '#f43f5e',
+                            glow: '#8b5cf6'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 5s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite alternate',
+                        'gradient-x': 'gradientX 8s ease infinite',
+                        'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(1deg)' },
+                        },
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)' },
+                            '100%': { boxShadow: '0 0 45px rgba(244, 63, 94, 0.5)' }
+                        },
+                        gradientX: {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.8);
+        }
+
+        /* Glowing Text Effect */
+        .thenzee-glow-text {
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Animated Gradient Background for Branding */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, #4f46e5, #7c3aed, #ec4899, #f43f5e);
+            background-size: 300% 300%;
+            animation: gradientX 8s ease infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen transition-colors duration-300 relative overflow-x-hidden">
+
+    <!-- Top Developer Instructions Banner -->
+    <div id="notepadBanner" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-indigo-500/30 flex items-center justify-between z-50 relative">
+        <div class="flex items-center space-x-2 overflow-hidden">
+            <span class="bg-indigo-500/30 text-indigo-300 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider shrink-0">Notepad Guide</span>
+            <p class="truncate"><i class="fa-solid fa-code text-indigo-400 mr-1"></i> Save as <b>index.html</b>. Use the built-in <b>"Manage Videos"</b> button inside any subject to quickly paste your custom YouTube links!</p>
+        </div>
+        <button onclick="dismissBanner()" class="text-slate-400 hover:text-white ml-2">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Animated Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="resetToHome()">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl blur-sm opacity-70 group-hover:opacity-100 transition duration-500 group-hover:scale-105"></div>
+                    <div class="relative w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-2xl font-heading shadow-inner">
+                        <span class="bg-gradient-to-tr from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">t</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-3xl font-black font-heading tracking-tight bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent thenzee-glow-text">thenzee</span>
+                    <span class="block text-[10px] font-bold text-indigo-500 dark:text-indigo-400 tracking-widest uppercase -mt-1">Smart Learning</span>
+                </div>
+            </div>
+
+            <!-- Global Search Bar -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="globalSearchInput" placeholder="Search class, subject (Maths, Malayalam, Physics...)" oninput="handleGlobalSearch(this.value)" class="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner">
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center space-x-3">
+                <!-- Tips & Tricks Button -->
+                <button onclick="openTipsModal()" class="relative group px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-lightbulb animate-bounce"></i>
+                    <span class="hidden sm:inline">Tips & Hacks</span>
+                </button>
+
+                <!-- Custom Link Manager Toggle -->
+                <button onclick="openLinkManagerModal()" title="Add Custom Video Links" class="px-3.5 py-2.5 rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold text-xs sm:text-sm border border-indigo-200 dark:border-indigo-800/50 hover:bg-indigo-100 transition-all flex items-center space-x-1.5">
+                    <i class="fa-solid fa-plus-circle text-indigo-500"></i>
+                    <span class="hidden lg:inline">Add Videos</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-105 transition-transform shadow-sm">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Input -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="mobileSearchInput" placeholder="Search classes or subjects..." oninput="handleGlobalSearch(this.value)" class="w-full pl-11 pr-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: HOME DASHBOARD & CLASS SELECTOR -->
+        <!-- ========================================== -->
+        <div id="homeView" class="space-y-10 animate-fade-in">
+
+            <!-- Hero Branding Section -->
+            <div class="relative overflow-hidden rounded-3xl animated-gradient-bg p-8 sm:p-12 text-white shadow-2xl shadow-indigo-500/25 animate-pulse-glow">
+                <div class="absolute -right-16 -bottom-16 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -top-16 w-64 h-64 bg-pink-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-3xl space-y-5">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold tracking-wide uppercase">
+                        <i class="fa-solid fa-wand-magic-sparkles text-yellow-300"></i>
+                        <span>Welcome to thenzee Student Portal</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl font-black font-heading tracking-tight leading-tight">
+                        Learn Every Subject. <br>
+                        <span class="bg-gradient-to-r from-yellow-200 via-amber-300 to-rose-200 bg-clip-text text-transparent">Visual, Fast & Smart.</span>
+                    </h1>
+
+                    <p class="text-indigo-100 text-base sm:text-lg max-w-2xl font-medium leading-relaxed">
+                        Select your grade to instantly access structured video lessons, key notes, exam hacks, and shortcuts across Mathematics, Malayalam, English, Sciences, IT, and Social Studies!
+                    </p>
+
+                    <div class="pt-3 flex flex-wrap gap-4 items-center">
+                        <button onclick="scrollToClasses()" class="px-7 py-3.5 rounded-2xl bg-white text-indigo-700 font-extrabold text-sm shadow-xl hover:bg-indigo-50 hover:scale-105 active:scale-95 transition-all">
+                            Explore Classes <i class="fa-solid fa-arrow-down ml-2"></i>
+                        </button>
+                        <button onclick="openTipsModal()" class="px-7 py-3.5 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/30 text-white font-bold text-sm hover:bg-slate-900/60 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-300"></i>
+                            <span>Study Tips & Tricks</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class & Grade Filter Toolbar -->
+            <div id="classesSection" class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-black font-heading tracking-tight">Select Your Class</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Filter grades to view subject curriculum and structured video playlists</p>
+                </div>
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 sm:pb-0" id="gradeChips">
+                    <button onclick="filterClasses('all')" class="class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all">All Grades</button>
+                    <button onclick="filterClasses('primary')" class="class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-100 transition-all">Primary (Class 5-6)</button>
+                    <button onclick="filterClasses('middle')" class="class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-100 transition-all">Middle (Class 7-8)</button>
+                    <button onclick="filterClasses('high')" class="class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-100 transition-all">High School (Class 9-10)</button>
+                </div>
+            </div>
+
+            <!-- Class Cards Container -->
+            <div id="classesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically generated via JS -->
+            </div>
+
+            <!-- All Included Subjects Preview Bar -->
+            <div class="glass-panel p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
+                <div class="text-center max-w-xl mx-auto">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider">Comprehensive Curriculum</span>
+                    <h3 class="text-2xl font-extrabold font-heading mt-2">All Major Subjects Covered</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Everything a student needs to excel in school exams</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-3">
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-calculator text-blue-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Mathematics</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-book-open text-emerald-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Malayalam</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-feather text-amber-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">English</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-bolt text-purple-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Physics</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-vial text-pink-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Chemistry</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-dna text-teal-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Biology</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-globe text-orange-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Social Science</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-language text-red-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">Hindi</h4>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-center space-y-2 hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-laptop-code text-indigo-500 text-xl"></i>
+                        <h4 class="text-xs font-bold">IT / Coding</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: SUBJECTS LIST FOR SELECTED CLASS -->
+        <!-- ========================================== -->
+        <div id="subjectView" class="hidden space-y-8 animate-fade-in">
+            <!-- Breadcrumb Navigation -->
+            <div class="flex items-center space-x-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                <button onclick="resetToHome()" class="hover:text-indigo-600 dark:hover:text-indigo-400 font-semibold">Home</button>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span id="breadcrumbClassName" class="font-bold text-slate-800 dark:text-slate-200">Class 10</span>
+            </div>
+
+            <!-- Subject View Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-6 sm:p-8 rounded-3xl border border-indigo-500/20">
+                <div>
+                    <span id="selectedClassBadge" class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold uppercase tracking-wider">Class 10</span>
+                    <h2 id="selectedClassTitle" class="text-3xl font-black font-heading mt-2">Class 10 Learning Portal</h2>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm mt-1">Select any subject below to open chapter video playlists and exam shortcuts.</p>
+                </div>
+                <button onclick="resetToHome()" class="self-start sm:self-center px-4 py-2.5 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-300 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to Grades</span>
+                </button>
+            </div>
+
+            <!-- Subject Grid Container -->
+            <div id="subjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: VIDEO LESSON PLAYER & PLAYLIST -->
+        <!-- ========================================== -->
+        <div id="videoView" class="hidden space-y-8 animate-fade-in">
+            <!-- Breadcrumbs -->
+            <div class="flex items-center space-x-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                <button onclick="resetToHome()" class="hover:text-indigo-600 font-semibold">Home</button>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <button id="bcClassLink" onclick="goToClassFromVideo()" class="hover:text-indigo-600 font-semibold">Class</button>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span id="breadcrumbSubjectName" class="font-bold text-slate-800 dark:text-slate-200">Subject</span>
+            </div>
+
+            <!-- Video Player Header Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center space-x-3">
+                        <span id="videoSubjectBadge" class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider">Mathematics</span>
+                        <span id="videoClassBadge" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Class 10</span>
+                    </div>
+                    <h2 id="activeVideoTitle" class="text-2xl sm:text-3xl font-extrabold font-heading mt-1">Lesson Title</h2>
+                </div>
+                <div class="flex items-center space-x-3 self-start">
+                    <button onclick="openLinkManagerModal()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all flex items-center space-x-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Change Video URL</span>
+                    </button>
+                    <button onclick="backToSubjects()" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-300 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Back</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video & Playlist Split Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Embed Frame & Notes -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+                        <div class="relative w-full aspect-video bg-slate-950 flex items-center justify-center">
+                            <iframe id="mainVideoIframe" class="w-full h-full absolute inset-0" src="" title="thenzee Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex items-center justify-between flex-wrap gap-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <div>
+                                        <h3 id="currentLessonTitle" class="font-bold text-lg">Chapter Overview</h3>
+                                        <p id="currentLessonDuration" class="text-xs text-slate-500">Duration: 15 mins</p>
+                                    </div>
+                                </div>
+                                <button onclick="openTipsModal()" class="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 text-xs font-bold transition-all flex items-center space-x-2">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    <span>Subject Hacks</span>
+                                </button>
+                            </div>
+                            <hr class="border-slate-200 dark:border-slate-800">
+                            <div>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Lesson Notes & Focus Points</h4>
+                                <p id="currentLessonDesc" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Watch this concept video carefully. Take notes on key formulas, syntax rules, or definitions mentioned during the lecture.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playlist Selector Sidebar -->
+                <div class="space-y-4">
+                    <div class="glass-panel p-6 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold font-heading text-lg">Subject Playlist</h3>
+                            <span id="playlistCount" class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-extrabold">0 Lessons</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Click any video below to switch lessons instantly:</p>
+
+                        <div id="playlistContainer" class="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- INTERACTIVE TIPS & TRICKS DRAWER MODAL -->
+    <!-- ========================================== -->
+    <div id="tipsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-6 text-white flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-lightbulb text-yellow-200"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black font-heading">thenzee Study Tips & Hacks</h3>
+                        <p class="text-xs text-amber-100">Proven techniques to master Maths, Malayalam, Sciences & Languages!</p>
+                    </div>
+                </div>
+                <button onclick="closeTipsModal()" class="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-all">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Subject Chips inside Modal -->
+            <div class="p-6 space-y-6 max-h-[65vh] overflow-y-auto">
+                <div class="flex flex-wrap gap-2 pb-2 border-b border-slate-200 dark:border-slate-800" id="tipCategoryChips">
+                    <button onclick="filterTips('all')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-sm transition-all">All Tips</button>
+                    <button onclick="filterTips('maths')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Mathematics</button>
+                    <button onclick="filterTips('malayalam')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Malayalam</button>
+                    <button onclick="filterTips('physics')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Physics</button>
+                    <button onclick="filterTips('chemistry')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Chemistry</button>
+                    <button onclick="filterTips('biology')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Biology</button>
+                    <button onclick="filterTips('english')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">English</button>
+                    <button onclick="filterTips('it')" class="tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all">Computer/IT</button>
+                </div>
+
+                <div id="tipsListContainer" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button onclick="closeTipsModal()" class="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-300 transition-all">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- EASY YOUTUBE LINK MANAGER MODAL -->
+    <!-- ========================================== -->
+    <div id="linkManagerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 space-y-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold font-heading">Add Custom Video Link</h3>
+                        <p class="text-xs text-slate-500">Paste your YouTube video link below</p>
+                    </div>
+                </div>
+                <button onclick="closeLinkManagerModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Video Title</label>
+                    <input type="text" id="customVideoTitle" placeholder="e.g., Chapter 1 Masterclass" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">YouTube URL or Embed Link</label>
+                    <input type="text" id="customVideoUrl" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Short Description</label>
+                    <input type="text" id="customVideoDesc" placeholder="e.g., Important exam problem walkthrough" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeLinkManagerModal()" class="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs">Cancel</button>
+                <button onclick="saveCustomVideo()" class="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 shadow-md">Add to Current Subject</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="glass-panel px-5 py-3 rounded-2xl shadow-2xl border border-indigo-500/30 bg-white/90 dark:bg-slate-900/90 flex items-center space-x-3">
+            <div id="toastIcon" class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h5 id="toastTitle" class="font-bold text-sm">thenzee Notification</h5>
+                <p id="toastMsg" class="text-xs text-slate-500">Updated successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP JAVASCRIPT LOGIC -->
+    <script>
+        /* ========================================================
+           FULL CURRICULUM DATASTORE (CLASS 5 - 10)
+           ======================================================== */
+        const educationalData = [
+            {
+                id: "class-10",
+                name: "Class 10",
+                category: "high",
+                icon: "fa-graduation-cap",
+                color: "from-indigo-600 via-purple-600 to-pink-600",
+                description: "SSLC / Board exam curriculum with complete video chapters.",
+                subjects: [
+                    {
+                        id: "maths-10",
+                        name: "Mathematics",
+                        icon: "fa-calculator",
+                        color: "from-blue-500 to-cyan-500",
+                        videos: [
+                            { title: "Quadratic Equations - Complete Chapter", duration: "25 mins", desc: "Solving quadratics using quadratic formula, factorization, and discriminant test.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Arithmetic Progressions (AP)", duration: "20 mins", desc: "Finding nth term, sum of first n terms, and word problems.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Trigonometry Ratios & Identities", duration: "28 mins", desc: "Mastering sin, cos, tan identities with solved textbook questions.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "malayalam-10",
+                        name: "Malayalam (മലയാളം)",
+                        icon: "fa-book-open",
+                        color: "from-emerald-500 to-teal-600",
+                        videos: [
+                            { title: "പാഠഭാഗങ്ങൾ & സാരം (Prose & Verse)", duration: "18 mins", desc: "ക്ലാസ്സ് 10 പ്രധാന പാഠഭാഗങ്ങളും പരീക്ഷ ചോദ്യങ്ങളും.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "വ്യാകരണവും വാക്യഘടനയും", duration: "22 mins", desc: "സമാസം, സന്ധി, വാക്യശുദ്ധി എന്നിവ ലളിതമായി മനസ്സിലാക്കാം.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "english-10",
+                        name: "English",
+                        icon: "fa-feather",
+                        color: "from-amber-500 to-orange-500",
+                        videos: [
+                            { title: "Literature & Poem Summaries", duration: "16 mins", desc: "Detailed summary, main themes, and character sketches.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Grammar & Formal Letter Writing", duration: "18 mins", desc: "Reported speech, passive voice, and score-boosting writing tips.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "physics-10",
+                        name: "Physics",
+                        icon: "fa-bolt",
+                        color: "from-purple-500 to-indigo-600",
+                        videos: [
+                            { title: "Light - Reflection & Refraction", duration: "24 mins", desc: "Ray diagrams for concave/convex lenses and mirror formula.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Electricity & Circuits", duration: "22 mins", desc: "Ohm's Law, series/parallel combinations, and power equations.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "chemistry-10",
+                        name: "Chemistry",
+                        icon: "fa-vial",
+                        color: "from-pink-500 to-rose-500",
+                        videos: [
+                            { title: "Chemical Reactions & Equations", duration: "20 mins", desc: "Balancing chemical equations and types of chemical reactions.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Periodic Classification of Elements", duration: "25 mins", desc: "Trends in periodic table: valency, atomic size, and electronegativity.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "biology-10",
+                        name: "Biology",
+                        icon: "fa-dna",
+                        color: "from-teal-500 to-emerald-600",
+                        videos: [
+                            { title: "Life Processes - Nutrition & Respiration", duration: "26 mins", desc: "Human digestive system and respiratory mechanisms explained with diagrams.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                            { title: "Heredity & Evolution", duration: "20 mins", desc: "Mendel's monohybrid/dihybrid cross experiments.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "social-10",
+                        name: "Social Science",
+                        icon: "fa-globe",
+                        color: "from-orange-500 to-amber-600",
+                        videos: [
+                            { title: "History & World Revolutions", duration: "22 mins", desc: "Key historical events, timelines, and map marking guide.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "hindi-10",
+                        name: "Hindi (हिंदी)",
+                        icon: "fa-language",
+                        color: "from-red-500 to-rose-600",
+                        videos: [
+                            { title: "कविता और व्याकरण (Poem & Grammar)", duration: "18 mins", desc: "Chapter explanation and important exam questions.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "it-10",
+                        name: "Computer Science / IT",
+                        icon: "fa-laptop-code",
+                        color: "from-indigo-500 to-blue-600",
+                        videos: [
+                            { title: "Python Programming & Cyber Safety", duration: "20 mins", desc: "Variables, loops, functions, and internet safety basics.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-9",
+                name: "Class 9",
+                category: "high",
+                icon: "fa-book-bookmark",
+                color: "from-purple-600 to-pink-600",
+                description: "Build strong foundational knowledge for high school.",
+                subjects: [
+                    {
+                        id: "maths-9",
+                        name: "Mathematics",
+                        icon: "fa-calculator",
+                        color: "from-blue-500 to-cyan-500",
+                        videos: [
+                            { title: "Polynomials & Factorization", duration: "20 mins", desc: "Algebraic identities and factor theorem.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "malayalam-9",
+                        name: "Malayalam (മലയാളം)",
+                        icon: "fa-book-open",
+                        color: "from-emerald-500 to-teal-600",
+                        videos: [
+                            { title: "പാഠം 1 കഥയും ആശയവും", duration: "15 mins", desc: "കഥാസാരം വ്യാഖ്യാനം.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "physics-9",
+                        name: "Physics",
+                        icon: "fa-bolt",
+                        color: "from-purple-500 to-indigo-600",
+                        videos: [
+                            { title: "Laws of Motion", duration: "18 mins", desc: "Newton's three laws of motion and momentum.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "chemistry-9",
+                        name: "Chemistry",
+                        icon: "fa-vial",
+                        color: "from-pink-500 to-rose-500",
+                        videos: [
+                            { title: "Atoms and Molecules", duration: "22 mins", desc: "Atomic mass, mole concept, and chemical formulas.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-8",
+                name: "Class 8",
+                category: "middle",
+                icon: "fa-shapes",
+                color: "from-emerald-600 to-teal-600",
+                description: "Interactive concepts designed for middle school students.",
+                subjects: [
+                    {
+                        id: "maths-8",
+                        name: "Mathematics",
+                        icon: "fa-calculator",
+                        color: "from-blue-500 to-cyan-500",
+                        videos: [
+                            { title: "Linear Equations in One Variable", duration: "16 mins", desc: "Solving simple algebraic equations.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    },
+                    {
+                        id: "malayalam-8",
+                        name: "Malayalam (മലയാളം)",
+                        icon: "fa-book-open",
+                        color: "from-emerald-500 to-teal-600",
+                        videos: [
+                            { title: "അക്ഷരശുദ്ധിയും വായനയും", duration: "14 mins", desc: "ശരിയായ ഉച്ചാരണ രീതികൾ.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-7",
+                name: "Class 7",
+                category: "middle",
+                icon: "fa-compass",
+                color: "from-amber-600 to-orange-600",
+                description: "Simple, fun, and easy visual video lectures.",
+                subjects: [
+                    {
+                        id: "maths-7",
+                        name: "Mathematics",
+                        icon: "fa-calculator",
+                        color: "from-blue-500 to-cyan-500",
+                        videos: [
+                            { title: "Integers & Fractions", duration: "15 mins", desc: "Addition, subtraction and fraction operations.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-6",
+                name: "Class 6",
+                category: "primary",
+                icon: "fa-pencil-ruler",
+                color: "from-cyan-600 to-blue-600",
+                description: "Fun conceptual clarity for primary learners.",
+                subjects: [
+                    {
+                        id: "science-6",
+                        name: "General Science",
+                        icon: "fa-flask",
+                        color: "from-purple-500 to-pink-500",
+                        videos: [
+                            { title: "Components of Food & Health", duration: "12 mins", desc: "Vitamins, minerals, and balanced diet concepts.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "class-5",
+                name: "Class 5",
+                category: "primary",
+                icon: "fa-child",
+                color: "from-rose-600 to-pink-600",
+                description: "Delightful lessons for young school kids.",
+                subjects: [
+                    {
+                        id: "maths-5",
+                        name: "Mathematics",
+                        icon: "fa-calculator",
+                        color: "from-blue-500 to-cyan-500",
+                        videos: [
+                            { title: "Numbers & Basic Shapes", duration: "10 mins", desc: "Understanding 2D shapes and number operations.", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // TIPS DATABASE
+        const tipsDatabase = [
+            {
+                category: "maths",
+                title: "Maths Shortcut: Quadratic Discriminant Test",
+                subject: "Mathematics",
+                badgeColor: "bg-blue-500",
+                content: "Before solving ax² + bx + c = 0, calculate b² - 4ac. If it's negative, stop—there are no real roots! This saves you 5 minutes of calculation time."
+            },
+            {
+                category: "malayalam",
+                title: "മലയാളത്തിൽ ഉയർന്ന സ്കോർ നേടാൻ (Malayalam Tips)",
+                subject: "Malayalam",
+                badgeColor: "bg-emerald-600",
+                content: "കവിതകളുടെ ആസ്വാദന കുറിപ്പ് എഴുതുമ്പോൾ കവി, കവിതയുടെ പേര്, പ്രധാന പ്രമേയം, കാവ്യശൈലി എന്നിവ ഉൾപ്പെടുത്തുക. പദശുദ്ധി പ്രത്യേകം ശ്രദ്ധിക്കുക."
+            },
+            {
+                category: "physics",
+                title: "Physics Ray Diagram Rule of Thumb",
+                subject: "Physics",
+                badgeColor: "bg-purple-600",
+                content: "Always draw rays parallel to the principal axis passing through the focus (F) after reflection/refraction. Keep arrows on ray paths to avoid losing marks!"
+            },
+            {
+                category: "chemistry",
+                title: "Balancing Equations in 3 Seconds",
+                subject: "Chemistry",
+                badgeColor: "bg-pink-600",
+                content: "First balance metals, then non-metals, then hydrogen, and lastly oxygen. This exact order prevents endless recalculations."
+            },
+            {
+                category: "biology",
+                title: "Memory Hack for Human Organs",
+                subject: "Biology",
+                badgeColor: "bg-teal-600",
+                content: "Use acronyms for complex pathways. For example, in digestion: Mouth -> Esophagus -> Stomach -> Small Intestine -> Large Intestine."
+            },
+            {
+                category: "english",
+                title: "Formal Essay Writing Structure",
+                subject: "English",
+                badgeColor: "bg-amber-600",
+                content: "Use the PEEL method for body paragraphs: Point, Explanation, Evidence/Example, and Link back to the essay question."
+            },
+            {
+                category: "it",
+                title: "Coding Best Practice",
+                subject: "Computer Science",
+                badgeColor: "bg-indigo-600",
+                content: "Always use clear variable names like `student_count` instead of single letters like `x`. It makes debugging 10x easier!"
+            }
+        ];
+
+        // State variables
+        let currentClassId = null;
+        let currentSubjectId = null;
+        let currentVideoIndex = 0;
+
+        // On Page Load
+        window.onload = function() {
+            renderClasses('all');
+            renderTips('all');
+        };
+
+        /* ========================================================
+           RENDER CLASSES
+           ======================================================== */
+        function renderClasses(filter) {
+            const grid = document.getElementById('classesGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? educationalData 
+                : educationalData.filter(c => c.category === filter);
+
+            filtered.forEach(cls => {
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between";
+                card.onclick = () => selectClass(cls.id);
+
+                card.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr ${cls.color} flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid ${cls.icon} text-2xl"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">${cls.category}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-black font-heading group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${cls.name}</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed">${cls.description}</p>
+                        </div>
+                    </div>
+                    <div class="pt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 mt-6">
+                        <span class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">${cls.subjects.length} Subjects Included</span>
+                        <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterClasses(category) {
+            document.querySelectorAll('.class-chip').forEach(btn => {
+                btn.className = "class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-100 transition-all";
+            });
+            event.target.className = "class-chip px-4 py-2 rounded-2xl text-xs font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all";
+            renderClasses(category);
+        }
+
+        function selectClass(classId) {
+            currentClassId = classId;
+            const cls = educationalData.find(c => c.id === classId);
+            if (!cls) return;
+
+            document.getElementById('breadcrumbClassName').innerText = cls.name;
+            document.getElementById('selectedClassBadge').innerText = cls.name;
+            document.getElementById('selectedClassTitle').innerText = `${cls.name} Subjects`;
+
+            const subGrid = document.getElementById('subjectsGrid');
+            subGrid.innerHTML = '';
+
+            cls.subjects.forEach(sub => {
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between";
+                card.onclick = () => selectSubject(cls.id, sub.id);
+
+                card.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid ${sub.icon} text-2xl"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Videos</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-black font-heading group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${sub.name}</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Structured video lectures & tips</p>
+                        </div>
+                    </div>
+                    <div class="pt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 mt-6">
+                        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">${sub.videos.length} Lessons</span>
+                        <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-play text-xs"></i>
+                        </div>
+                    </div>
+                `;
+                subGrid.appendChild(card);
+            });
+
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('subjectView').classList.remove('hidden');
+            document.getElementById('videoView').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectSubject(classId, subjectId) {
+            currentClassId = classId;
+            currentSubjectId = subjectId;
+            const cls = educationalData.find(c => c.id === classId);
+            const sub = cls.subjects.find(s => s.id === subjectId);
+            if (!sub) return;
+
+            document.getElementById('bcClassLink').innerText = cls.name;
+            document.getElementById('breadcrumbSubjectName').innerText = sub.name;
+            document.getElementById('videoSubjectBadge').innerText = sub.name;
+            document.getElementById('videoClassBadge').innerText = cls.name;
+
+            loadVideo(0);
+
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('subjectView').classList.add('hidden');
+            document.getElementById('videoView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function loadVideo(index) {
+            currentVideoIndex = index;
+            const cls = educationalData.find(c => c.id === currentClassId);
+            const sub = cls.subjects.find(s => s.id === currentSubjectId);
+            if (!sub || !sub.videos[index]) return;
+
+            const vid = sub.videos[index];
+
+            document.getElementById('mainVideoIframe').src = vid.url;
+            document.getElementById('activeVideoTitle').innerText = vid.title;
+            document.getElementById('currentLessonTitle').innerText = vid.title;
+            document.getElementById('currentLessonDuration').innerText = `Duration: ${vid.duration}`;
+            document.getElementById('currentLessonDesc').innerText = vid.desc;
+
+            // Render playlist
+            const playlistContainer = document.getElementById('playlistContainer');
+            playlistContainer.innerHTML = '';
+            document.getElementById('playlistCount').innerText = `${sub.videos.length} Lessons`;
+
+            sub.videos.forEach((v, idx) => {
+                const item = document.createElement('div');
+                const isCurrent = idx === index;
+                item.className = `p-3 rounded-2xl cursor-pointer transition-all flex items-center space-x-3 border ${isCurrent ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/25' : 'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80 hover:bg-indigo-50 dark:hover:bg-slate-800'}`;
+                item.onclick = () => loadVideo(idx);
+
+                item.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl ${isCurrent ? 'bg-white text-indigo-600' : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'} flex items-center justify-center shrink-0 font-bold text-xs">
+                        ${idx + 1}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-xs truncate ${isCurrent ? 'text-white' : 'text-slate-800 dark:text-slate-200'}">${v.title}</h4>
+                        <span class="text-[10px] ${isCurrent ? 'text-indigo-100' : 'text-slate-400'}">${v.duration}</span>
+                    </div>
+                `;
+                playlistContainer.appendChild(item);
+            });
+        }
+
+        /* ========================================================
+           NAVIGATION & HELPERS
+           ======================================================== */
+        function resetToHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.getElementById('subjectView').classList.add('hidden');
+            document.getElementById('videoView').classList.add('hidden');
+            document.getElementById('mainVideoIframe').src = "";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToSubjects() {
+            selectClass(currentClassId);
+        }
+
+        function goToClassFromVideo() {
+            selectClass(currentClassId);
+        }
+
+        function scrollToClasses() {
+            document.getElementById('classesSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function dismissBanner() {
+            document.getElementById('notepadBanner').style.display = 'none';
+        }
+
+        /* ========================================================
+           TIPS MODAL LOGIC
+           ======================================================== */
+        function openTipsModal() {
+            const modal = document.getElementById('tipsModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeTipsModal() {
+            const modal = document.getElementById('tipsModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function renderTips(filter) {
+            const container = document.getElementById('tipsListContainer');
+            container.innerHTML = '';
+
+            const filtered = filter === 'all'
+                ? tipsDatabase
+                : tipsDatabase.filter(t => t.category === filter);
+
+            filtered.forEach(tip => {
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black text-white ${tip.badgeColor}">${tip.subject}</span>
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                    </div>
+                    <h4 class="font-bold text-sm font-heading">${tip.title}</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${tip.content}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterTips(category) {
+            document.querySelectorAll('.tip-chip').forEach(btn => {
+                btn.className = "tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100 transition-all";
+            });
+            event.target.className = "tip-chip px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-sm transition-all";
+            renderTips(category);
+        }
+
+        /* ========================================================
+           CUSTOM YOUTUBE LINK MANAGER
+           ======================================================== */
+        function openLinkManagerModal() {
+            const modal = document.getElementById('linkManagerModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLinkManagerModal() {
+            const modal = document.getElementById('linkManagerModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveCustomVideo() {
+            const title = document.getElementById('customVideoTitle').value.trim();
+            let url = document.getElementById('customVideoUrl').value.trim();
+            const desc = document.getElementById('customVideoDesc').value.trim() || "Custom video added by user.";
+
+            if (!title || !url) {
+                showToast("Required Fields", "Please enter a title and YouTube URL.");
+                return;
+            }
+
+            // Convert standard YouTube watch link to embed format
+            if (url.includes('watch?v=')) {
+                const videoId = url.split('v=')[1].split('&')[0];
+                url = `https://www.youtube.com/embed/${videoId}`;
+            } else if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1].split('?')[0];
+                url = `https://www.youtube.com/embed/${videoId}`;
+            }
+
+            // Add to current subject or Class 10 Maths default
+            const cls = educationalData.find(c => c.id === (currentClassId || 'class-10'));
+            const sub = cls.subjects.find(s => s.id === (currentSubjectId || cls.subjects[0].id));
+
+            sub.videos.unshift({
+                title: title,
+                duration: "Custom",
+                desc: desc,
+                url: url
+            });
+
+            closeLinkManagerModal();
+            showToast("Success", `Added "${title}" to ${sub.name}!`);
+
+            if (currentSubjectId) {
+                selectSubject(currentClassId, currentSubjectId);
+            }
+        }
+
+        /* ========================================================
+           SEARCH & UTILS
+           ======================================================== */
+        function handleGlobalSearch(query) {
+            const q = query.toLowerCase().trim();
+            if (!q) return;
+
+            for (let cls of educationalData) {
+                if (cls.name.toLowerCase().includes(q)) {
+                    selectClass(cls.id);
+                    return;
+                }
+                for (let sub of cls.subjects) {
+                    if (sub.name.toLowerCase().includes(q)) {
+                        selectSubject(cls.id, sub.id);
+                        return;
+                    }
+                }
+            }
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            html.classList.toggle('dark');
+            
+            if (html.classList.contains('dark')) {
+                icon.className = "fa-solid fa-sun";
+                showToast("thenzee Theme", "Dark mode enabled.");
+            } else {
+                icon.className = "fa-solid fa-moon";
+                showToast("thenzee Theme", "Light mode enabled.");
+            }
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMsg').innerText = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
